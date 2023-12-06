@@ -14,6 +14,20 @@
 <body>
     <canvas id="canvas" width="400" height="400"></canvas>
     <script src="snake.js"></script>
+    <script>
+        const eventSource = new EventSource("/chat");
+        let a = 1
+        eventSource.onmessage = (event) => {
+            const responseData = JSON.parse(event.data);
+            // 处理从服务器接收到的流式数据，例如更新UI
+            a++
+            console.log(a, responseData);
+        };
+        eventSource.onerror = (error) => {
+            console.error("Error occurred:", error);
+            eventSource.close();
+        };
+    </script>
 </body>
 
 </html>

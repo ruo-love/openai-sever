@@ -1,0 +1,23 @@
+name: Build and Deploy
+on: # 监听 master 分支上的 push 事件
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # 构建环境使用 ubuntu
+    steps:
+      - name: Checkout # 获取源码
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Deploy to Tencent Cloud
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: / # 这是要复制到静态服务器的文件夹名称
+          REMOTE_HOST: "43.153.105.58" # 你的腾讯云公网地址
+          REMOTE_USER: root # 腾讯云登录后默认为 root 用户
+          TARGET: /root/ruoChatServer/ # 打包后的 dev_dist 文件夹将放在/home/lighthouse/node-server
